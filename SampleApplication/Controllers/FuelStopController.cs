@@ -67,6 +67,13 @@ namespace SampleApplication.Controllers
             return NoContent();
         }
 
+        [HttpPatch("increasepetrolfuelquantity/{id}")]
+        public async Task<IActionResult> incrementFuelquantity(string id, [FromBody] string fueltype, double fuelQuantity)
+        {
+            await _mongoDBService.IncreaseFuelAsync(id, fueltype, fuelQuantity);
+            return NoContent();
+        }
+
 
 
     }
