@@ -33,8 +33,10 @@ namespace SampleApplication.Services
         }
 
         public async Task<FuelStop> GetFuelStopbyIdAsync(string id)
+
         {
-            return  _fuelstopCollection.Find<FuelStop>(fuelstop => fuelstop.Id == id).FirstOrDefault();
+            var data = await  _fuelstopCollection.Find<FuelStop>(fuelstop => fuelstop.Id == id).SingleAsync();
+            return data;
 
 
            
