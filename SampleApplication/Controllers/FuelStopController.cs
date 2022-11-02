@@ -25,18 +25,19 @@ namespace SampleApplication.Controllers
             return await _mongoDBService.GetALLFuelStopsAsync();
         }
 
-        [HttpGet]
-        public async Task<List<FuelStop>> GetAllFuelStopsbyID()
-        {
-            return await _mongoDBService.GetALLFuelStopsAsync();
-        }
+       
 
-        [HttpGet("{id}")]
+        [HttpGet("getfuelstation/{id}")]
         public async Task <FuelStop> GetFuelStopbyID( string id )
         {
           return  await _mongoDBService.GetFuelStopbyIdAsync( id );
         }
 
+        [HttpGet("getfuelstationforStationOwner/{email}")]
+        public async Task<FuelStop> GetFuelStopbyEmail(string email)
+        {
+            return await _mongoDBService.GetFuelStopbyEmailAsync(email);
+        }
 
         [HttpPost]
         public async Task<IActionResult> AddFuelStop([FromBody] FuelStop fuelStop)
@@ -67,10 +68,10 @@ namespace SampleApplication.Controllers
             return NoContent();
         }
 
-        [HttpPatch("increasepetrolfuelquantity/{id}")]
-        public async Task<IActionResult> incrementFuelquantity(string id, [FromBody] string fueltype, double fuelQuantity)
+        [HttpPatch("increasepetrolfuelquantity/{email}")]
+        public async Task<IActionResult> incrementFuelquantity(string email, [FromBody] string fueltype, double fuelQuantity,string arrivalTime)
         {
-            await _mongoDBService.IncreaseFuelAsync(id, fueltype, fuelQuantity);
+            await _mongoDBService.IncreaseFuelAsync(email, fueltype, fuelQuantity,arrivalTime);
             return NoContent();
         }
 

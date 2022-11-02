@@ -43,6 +43,17 @@ namespace SampleApplication.Services
            
         }
 
+        public async Task<FuelStop> GetFuelStopbyEmailAsync(string email)
+
+        {
+            var data = await _fuelstopCollection.Find<FuelStop>(fuelstop => fuelstop.UserEmail == email).SingleAsync();
+            return data;
+
+
+
+
+        }
+
         public async Task AddToFuelQueueAsync(string id, String vechiletype)
         {
             FilterDefinition<FuelStop> filter = Builders<FuelStop>.Filter.Eq("Id", id);
@@ -118,9 +129,9 @@ namespace SampleApplication.Services
                     return;
                 }
             }
-            else if (petroltype.Equals("disel"))
+            else if (petroltype.Equals("diesel"))
             {
-                if ((GetFuelStopbyIdAsync(id).Result.FuelPetrolCapacity - fuelquantity) >= 0)
+                if ((GetFuelStopbyIdAsync(id).Result.FuelDiselCapacity - fuelquantity) >= 0)
                 {
                     UpdateDefinition<FuelStop> update = Builders<FuelStop>.Update.Set("FuelDiselCapacity", GetFuelStopbyIdAsync(id).Result.FuelDiselCapacity - fuelquantity);
                     await _fuelstopCollection.UpdateOneAsync(filter, update);
@@ -134,20 +145,24 @@ namespace SampleApplication.Services
         }
 
 
-        public async Task IncreaseFuelAsync(string id, String petroltype, double fuelquantity)
+        public async Task IncreaseFuelAsync(string email, String petroltype, double fuelquantity,string arrivalTime)
         {
-            FilterDefinition<FuelStop> filter = Builders<FuelStop>.Filter.Eq("Id", id);
+            FilterDefinition<FuelStop> filter = Builders<FuelStop>.Filter.Eq("UserEmail", email);
 
             if (petroltype.Equals("petrol"))
             {
-                UpdateDefinition<FuelStop> update = Builders<FuelStop>.Update.Set("FuelPetrolCapacity", GetFuelStopbyIdAsync(id).Result.FuelPetrolCapacity + fuelquantity);
+                UpdateDefinition<FuelStop> update = Builders<FuelStop>.Update.Set("FuelPetrolCapacity", GetFuelStopbyEmailAsync(email).Result.FuelPetrolCapacity + fuelquantity);
                 await _fuelstopCollection.UpdateOneAsync(filter, update);
+                UpdateDefinition<FuelStop> update1 = Builders<FuelStop>.Update.Set("ArrivalTime", arrivalTime);
+                await _fuelstopCollection.UpdateOneAsync(filter, update1);
                 return;
             }
-            else if (petroltype.Equals("disel"))
+            else if (petroltype.Equals("diesel"))
             {
-                UpdateDefinition<FuelStop> update = Builders<FuelStop>.Update.Set("FuelDiselCapacity", GetFuelStopbyIdAsync(id).Result.FuelDiselCapacity + fuelquantity);
+                UpdateDefinition<FuelStop> update = Builders<FuelStop>.Update.Set("FuelDiselCapacity", GetFuelStopbyEmailAsync(email).Result.FuelDiselCapacity + fuelquantity);
                 await _fuelstopCollection.UpdateOneAsync(filter, update);
+                UpdateDefinition<FuelStop> update1 = Builders<FuelStop>.Update.Set("ArrivalTime",  arrivalTime);
+                await _fuelstopCollection.UpdateOneAsync(filter, update1);
                 return;
             }
 

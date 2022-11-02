@@ -31,6 +31,10 @@ namespace SampleApplication.Models
 
         public int? ThreeWheelerQueue { get; set; } = 0;
 
+        public string? UserEmail { get; set; }
+
+        public string? ArrivalTime   { get; set; }
+
 
 
 
